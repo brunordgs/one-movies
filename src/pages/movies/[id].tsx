@@ -7,7 +7,7 @@ export default function MoviesId() {
 	return (
 		<main>
 			<section>
-				<Container className="flex flex-col md:flex-row md:gap-x-24 py-16">
+				<Container className="flex flex-col md:flex-row md:gap-x-24 pt-8 md:pt-16 pb-16">
 					<div className="flex-none">
 						<picture>
 							<img
@@ -19,7 +19,7 @@ export default function MoviesId() {
 					</div>
 
 					<div>
-						<h2 className="text-4xl mt-4 md:mt-0 mb-2 font-semibold">Fall</h2>
+						<h2 className="text-4xl mt-4 md:mt-0 mb-2 font-bold">Fall</h2>
 						<div className="flex flex-wrap items-center text-slate-300 text-sm">
 							<AiFillStar className="text-yellow-200" />
 							<span className="ml-1">73.50%</span>
@@ -66,18 +66,18 @@ export default function MoviesId() {
 				</Container>
 			</section>
 
-			<section className="border-t border-white/5">
-				<Container className="py-16">
+			<section>
+				<Container className="py-16 border-t border-secondary">
 					<h2 className="text-4xl font-bold">Cast</h2>
 
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
 						{Array.from({ length: 5 }, (_, index) => (
 							<div key={index} className="mt-8">
-								<Link href="/">
+								<Link href="/actors/1">
 									<picture>
 										<img
 											src="https://image.tmdb.org/t/p/w300//fhwQWWTwl8r613puGYKMyf9H8mQ.jpg"
-											className="hover:opacity-75 transition ease-in-out"
+											className="hover:opacity-75 transition ease-in-out rounded-sm"
 											alt=""
 										/>
 									</picture>
@@ -89,6 +89,29 @@ export default function MoviesId() {
 									</Link>
 									<p className="text-sm text-slate-300">Becky</p>
 								</div>
+							</div>
+						))}
+					</div>
+				</Container>
+			</section>
+
+			<section>
+				<Container className="py-16 border-t border-secondary">
+					<h2 className="text-4xl font-bold">Images</h2>
+
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+						{Array.from({ length: 9 }, (_, index) => (
+							<div key={index} className="mt-8">
+								<button type="button">
+									<picture>
+										<img
+											src="https://image.tmdb.org/t/p/w500/1DBDwevWS8OhiT3wqqlW7KGPd6m.jpg"
+											className="hover:opacity-75 transition ease-in-out rounded-sm"
+											loading="lazy"
+											alt=""
+										/>
+									</picture>
+								</button>
 							</div>
 						))}
 					</div>

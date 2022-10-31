@@ -11,13 +11,13 @@ export default function Home() {
 			</Head>
 
 			<section>
-				<Container className="py-16">
-					<h2 className="text-slate-200 uppercase font-bold tracking-wide">Popular movies</h2>
+				<Container className="pt-8 md:pt-16 pb-16">
+					<h2 className="text-slate-200 uppercase font-bold tracking-wide text-lg">Popular movies</h2>
 
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
 						{Array.from({ length: 20 }, (_, index) => (
 							<div key={index} className="mt-8">
-								<Link href="movies/1">
+								<Link href="/movies/1">
 									<picture>
 										<img
 											src="https://image.tmdb.org/t/p/w500/spCAxD99U1A6jsiePFoqdEcY0dG.jpg"
@@ -28,7 +28,7 @@ export default function Home() {
 								</Link>
 
 								<div className="mt-2">
-									<Link href="movies/1" className="text-lg mt-2 hover:text-slate-200">
+									<Link href="/movies/1" className="text-lg mt-2 hover:text-slate-200">
 										Fall
 									</Link>
 									<div className="flex items-center text-slate-300 text-sm mt-1">

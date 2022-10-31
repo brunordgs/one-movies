@@ -9,7 +9,7 @@ export function Navbar() {
 				<Container>
 					<ul className="flex items-center gap-6 h-10 font-bold text-slate-200">
 						<li>
-							<Link href="/" className="font-black text-xl text-white">
+							<Link href="/" className="font-black text-xl text-white hover:brightness-90">
 								one <span className="text-sky-500">movies</span>
 							</Link>
 						</li>
