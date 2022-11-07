@@ -1,9 +1,18 @@
 import { Container } from '@/components/ui/Container';
+import { axios } from '@/services/axios';
+import { Movie } from '@/shared/interfaces/Movie';
+import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { AiFillStar } from 'react-icons/ai';
 import { IoPlayCircleOutline } from 'react-icons/io5';
 
-export default function MoviesId() {
+interface Props {
+	movie: Movie;
+}
+
+export default function MoviesId({
+	movie: { poster_path, title, overview, release_date, vote_average, genres },
+}: Props) {
 	return (
 		<main>
 			<section>
@@ -11,31 +20,29 @@ export default function MoviesId() {
 					<div className="flex-none">
 						<picture>
 							<img
-								src="https://image.tmdb.org/t/p/w500/spCAxD99U1A6jsiePFoqdEcY0dG.jpg"
+								src={`https://image.tmdb.org/t/p/original/${poster_path}`}
 								className="rounded-sm w-64 lg:w-96"
-								alt=""
+								alt={title}
 							/>
 						</picture>
 					</div>
 
 					<div>
-						<h2 className="text-4xl mt-4 md:mt-0 mb-2 font-bold">Fall</h2>
+						<h2 className="text-4xl mt-4 md:mt-0 mb-2 font-bold">{title}</h2>
 						<div className="flex flex-wrap items-center text-slate-300 text-sm">
 							<AiFillStar className="text-yellow-200" />
-							<span className="ml-1">73.50%</span>
+							<span className="ml-1">{(vote_average * 10).toFixed(2)}%</span>
 							<span className="mx-2">|</span>
-							<span>August 11, 2022</span>
+							<span>
+								{new Intl.DateTimeFormat('en', {
+									dateStyle: 'long',
+								}).format(new Date(release_date))}
+							</span>
 							<span className="mx-2">|</span>
-							<span>Thriller</span>
+							<span>{genres.map(({ name }) => name).join(', ')}</span>
 						</div>
 
-						<p className="text-slate-200 mt-8">
-							For best friends Becky and Hunter, life is all about conquering fears and pushing
-							limits. But after they climb 2,000 feet to the top of a remote, abandoned radio tower,
-							they find themselves stranded with no way down. Now Becky and Hunter&apos;s expert
-							climbing skills will be put to the ultimate test as they desperately fight to survive
-							the elements, a lack of supplies, and vertigo-inducing heights
-						</p>
+						<p className="text-slate-200 mt-8">{overview}</p>
 
 						<div className="mt-12">
 							<h3 className="font-bold">Featured Crew</h3>
@@ -105,7 +112,7 @@ export default function MoviesId() {
 								<button type="button">
 									<picture>
 										<img
-											src="https://image.tmdb.org/t/p/w500/1DBDwevWS8OhiT3wqqlW7KGPd6m.jpg"
+											src="https://image.tmdb.org/t/p/original/1DBDwevWS8OhiT3wqqlW7KGPd6m.jpg"
 											className="hover:opacity-75 transition ease-in-out rounded-sm"
 											loading="lazy"
 											alt=""
@@ -120,3 +127,13 @@ export default function MoviesId() {
 		</main>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+	const { data } = await axios.get(`/movie/${query.id}`);
+
+	return {
+		props: {
+			movie: data,
+		},
+	};
+};
