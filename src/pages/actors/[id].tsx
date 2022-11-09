@@ -1,80 +1,127 @@
 import { Container } from '@/components/ui/Container';
+import { axios } from '@/services/axios';
+import { Actor } from '@/shared/interfaces/Actor';
+import { formatDate } from '@/utils/format';
+import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import { FaBirthdayCake, FaInstagram, FaTwitter } from 'react-icons/fa';
 
-export default function ActorsId() {
+interface Props {
+	actor: Actor;
+}
+
+export default function ActorsId({
+	actor: { name, biography, profile_path, birthday, place_of_birth, credits },
+}: Props) {
+	const birthdayDate = formatDate(birthday);
+	const actorAge = new Date().getFullYear() - +birthday.slice(0, 4);
+
 	return (
-		<main className="md:h-screen">
-			<section>
-				<Container className="flex flex-col md:flex-row md:gap-x-24 pt-8 md:pt-16 pb-16">
-					<div className="flex-none">
-						<picture>
-							<img
-								src="https://image.tmdb.org/t/p/w300//fhwQWWTwl8r613puGYKMyf9H8mQ.jpg"
-								className="rounded-sm"
-								alt=""
-							/>
-						</picture>
+		<>
+			<Head>
+				<title>{name} - One Movies</title>
+			</Head>
 
-						<ul className="flex items-center mt-4 gap-6 px-6">
-							<li>
-								<Link
-									href="/"
-									className="text-slate-300 hover:text-white transition ease-in-out"
-									target="_blank"
-									rel="noreferrer noopener"
-								>
-									<FaInstagram size={24} />
-								</Link>
-							</li>
-							<li>
-								<Link
-									href="/"
-									className="text-slate-300 hover:text-white transition ease-in-out"
-									target="_blank"
-									rel="noreferrer noopener"
-								>
-									<FaTwitter size={24} />
-								</Link>
-							</li>
-						</ul>
-					</div>
+			<main>
+				<section>
+					<Container className="flex flex-col md:flex-row md:gap-x-24 pt-8 md:pt-16 pb-16">
+						<div className="flex-none">
+							<picture>
+								<img
+									src={`https://image.tmdb.org/t/p/w300/${profile_path}`}
+									className="rounded"
+									alt=""
+								/>
+							</picture>
 
-					<div>
-						<h2 className="text-4xl mt-4 md:mt-0 mb-2 font-bold">Grace Caroline Currey</h2>
-						<div className="flex flex-wrap items-center text-slate-300 text-sm">
-							<FaBirthdayCake />
-							<span className="ml-2">July 17, 1996 (26 years old) in USA</span>
+							<ul className="flex items-center mt-4 gap-6 px-6">
+								<li>
+									<Link
+										href="/"
+										className="text-slate-300 hover:text-white transition ease-in-out"
+										target="_blank"
+										rel="noreferrer noopener"
+									>
+										<FaInstagram size={24} />
+									</Link>
+								</li>
+								<li>
+									<Link
+										href="/"
+										className="text-slate-300 hover:text-white transition ease-in-out"
+										target="_blank"
+										rel="noreferrer noopener"
+									>
+										<FaTwitter size={24} />
+									</Link>
+								</li>
+							</ul>
 						</div>
 
-						<p className="text-slate-200 mt-8">
-							Grace Caroline Currey (born July 17, 1996) is an American actress, best known for
-							playing Young Melinda Gordon on Ghost Whisperer, Haley Farrel in Bones, and Young
-							Natalie Wood in The Mystery of Natalie Wood. She also played the character Sydney
-							Briggs in Home of the Brave. She starred in the television film Back When We Were
-							Grownups, playing Young Biddy.
-						</p>
+						<div>
+							<h2 className="text-4xl mt-4 md:mt-0 mb-2 font-bold">{name}</h2>
+							<div className="flex flex-wrap items-center text-slate-300 text-sm">
+								<FaBirthdayCake />
+								<span className="ml-2">
+									{birthdayDate} ({actorAge} years old) in {place_of_birth}
+								</span>
+							</div>
 
-						<div className="mt-12">
-							<h3 className="font-bold">Known For</h3>
-							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
-								<div className="mt-4">
-									<Link href="/movies/1" className="group">
+							<p className="text-slate-200 mt-8">{biography}</p>
+
+							<div className="mt-12">
+								<h3 className="font-bold">Known For</h3>
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+									<div className="mt-4">
+										{/* {credits.map(({ id }) => (
+									<Link key={id} href="/movies/1" className="group">
 										<picture>
 											<img
-												src="https://image.tmdb.org/t/p/w185//spCAxD99U1A6jsiePFoqdEcY0dG.jpg"
-												className="group-hover:opacity-75 transition ease-in-out rounded-sm"
+												src={`https://image.tmdb.org/t/p/w185/`}
+												className="group-hover:opacity-75 transition ease-in-out rounded"
 												alt=""
 											/>
 										</picture>
 										<span className="text-slate-300 text-sm mt-1 block">Fall</span>
 									</Link>
+									))} */}
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				</Container>
-			</section>
-		</main>
+					</Container>
+				</section>
+
+				<section>
+					<Container className="py-16 border-t border-secondary">
+						<h2 className="text-4xl font-bold">Credits</h2>
+
+						<ul className="list-disc leading-loose pl-5 mt-8">
+							{credits.map(({ id, title, release_date, character }) => (
+								<li key={id}>
+									{new Date(release_date).getFullYear()} ·{' '}
+									<span className="font-black">{title}</span> as {character}
+								</li>
+							))}
+						</ul>
+					</Container>
+				</section>
+			</main>
+		</>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+	const { data } = await axios.get(`/person/${query.id}`);
+	const { data: credits } = await axios.get(`/person/${query.id}/movie_credits`);
+
+	return {
+		props: {
+			actor: {
+				...data,
+				credits: credits.cast,
+			},
+		},
+	};
+};

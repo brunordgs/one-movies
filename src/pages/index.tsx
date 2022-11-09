@@ -3,6 +3,7 @@ import { axios } from '@/services/axios';
 import { Movie } from '@/shared/interfaces/Movie';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import Image from 'next/image';
 import Link from 'next/link';
 import { AiFillStar } from 'react-icons/ai';
 
@@ -14,7 +15,7 @@ export default function Home({ movies }: Props) {
 	return (
 		<main>
 			<Head>
-				<title>One movies</title>
+				<title>One Movies</title>
 			</Head>
 
 			<section>
@@ -30,14 +31,18 @@ export default function Home({ movies }: Props) {
 									<picture>
 										<img
 											src={`https://image.tmdb.org/t/p/original/${poster_path}`}
-											className="rounded-sm hover:opacity-75 transition ease-in-out duration-150"
+											className="rounded hover:opacity-75 transition ease-in-out duration-150"
+											loading="lazy"
 											alt={title}
 										/>
 									</picture>
 								</Link>
 
 								<div className="mt-2">
-									<Link href={`/movies/${id}`} className="text-lg mt-2 hover:text-slate-200">
+									<Link
+										href={`/movies/${id}`}
+										className="text-base xl:text-lg mt-2 hover:text-slate-200"
+									>
 										{title}
 									</Link>
 									<div className="flex items-center text-slate-300 text-sm mt-1">

@@ -1,3 +1,5 @@
+import { Cast } from "./Cast";
+
 export interface Movie {
 	id: number;
 	title: string;
@@ -9,4 +11,6 @@ export interface Movie {
 		id: number;
 		name: string;
 	}[];
+	trailerId: string;
+	cast: Cast[];
 }
