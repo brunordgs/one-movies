@@ -1,4 +1,4 @@
-import { Cast } from "./Cast";
+import { Cast } from './Cast';
 
 export interface Movie {
 	id: number;
@@ -13,4 +13,7 @@ export interface Movie {
 	}[];
 	trailerId: string;
 	cast: Cast[];
+	images: {
+		file_path: string;
+	}[];
 }

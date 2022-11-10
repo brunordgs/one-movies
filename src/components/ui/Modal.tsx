@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 
 interface Props extends Children {
 	open: boolean;
-	onOpen(open: boolean): void;
+	onOpen(open: boolean | object): void;
 }
 
 export function Modal({ open, onOpen, children }: Props) {

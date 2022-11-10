@@ -98,12 +98,23 @@ export default function ActorsId({
 						<h2 className="text-4xl font-bold">Credits</h2>
 
 						<ul className="list-disc leading-loose pl-5 mt-8">
-							{credits.map(({ id, title, release_date, character }) => (
-								<li key={id}>
-									{new Date(release_date).getFullYear()} ·{' '}
-									<span className="font-black">{title}</span> as {character}
-								</li>
-							))}
+							{credits
+								.sort((a, b) => {
+									const aReleaseDate = new Date(a.release_date).getFullYear();
+									const bReleaseDate = new Date(b.release_date).getFullYear();
+
+									return aReleaseDate > bReleaseDate || !a.release_date
+										? -1
+										: aReleaseDate < bReleaseDate
+										? 1
+										: 0;
+								})
+								.map(({ id, title, release_date, character }) => (
+									<li key={id}>
+										{release_date ? new Date(release_date).getFullYear() : 'Future'} ·{' '}
+										<span className="font-black">{title}</span> as {character}
+									</li>
+								))}
 						</ul>
 					</Container>
 				</section>

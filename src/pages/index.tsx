@@ -30,7 +30,7 @@ export default function Home({ movies }: Props) {
 								<Link href={`/movies/${id}`}>
 									<picture>
 										<img
-											src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+											src={`https://image.tmdb.org/t/p/original${poster_path}`}
 											className="rounded hover:opacity-75 transition ease-in-out duration-150"
 											loading="lazy"
 											alt={title}

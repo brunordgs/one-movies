@@ -15,9 +15,23 @@ interface Props {
 }
 
 export default function MoviesId({
-	movie: { poster_path, title, overview, release_date, vote_average, genres, trailerId, cast },
+	movie: {
+		poster_path,
+		title,
+		overview,
+		release_date,
+		vote_average,
+		genres,
+		trailerId,
+		cast,
+		images,
+	},
 }: Props) {
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false);
+	const [backdropModal, setBackdropModal] = useState({
+		open: false,
+		url: '',
+	});
 
 	const voteAverage = (vote_average * 10).toFixed(2);
 	const releaseDate = formatDate(release_date);
@@ -34,7 +48,7 @@ export default function MoviesId({
 						<div className="flex-none">
 							<picture>
 								<img
-									src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+									src={`https://image.tmdb.org/t/p/original${poster_path}`}
 									className="rounded w-64 lg:w-96"
 									alt={title}
 								/>
@@ -74,7 +88,7 @@ export default function MoviesId({
 								<button
 									type="button"
 									className="inline-flex items-center gap-2 bg-sky-500 rounded font-bold px-5 py-4 transition ease-in-out hover:bg-sky-600 mt-12"
-									onClick={() => setIsModalOpen(true)}
+									onClick={() => setIsTrailerModalOpen(true)}
 								>
 									<IoPlayCircleOutline size={24} />
 									Play trailer
@@ -94,7 +108,7 @@ export default function MoviesId({
 									<Link href={`/actors/${id}`}>
 										<picture>
 											<img
-												src={`https://image.tmdb.org/t/p/original/${profile_path}`}
+												src={`https://image.tmdb.org/t/p/original${profile_path}`}
 												className="hover:opacity-75 transition ease-in-out rounded"
 												alt={name}
 											/>
@@ -118,12 +132,20 @@ export default function MoviesId({
 						<h2 className="text-4xl font-bold">Images</h2>
 
 						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-							{Array.from({ length: 9 }, (_, index) => (
-								<div key={index} className="mt-8">
-									<button type="button">
+							{images.map(({ file_path }) => (
+								<div key={file_path} className="mt-8">
+									<button
+										type="button"
+										onClick={() =>
+											setBackdropModal({
+												open: true,
+												url: file_path,
+											})
+										}
+									>
 										<picture>
 											<img
-												src="https://image.tmdb.org/t/p/original/1DBDwevWS8OhiT3wqqlW7KGPd6m.jpg"
+												src={`https://image.tmdb.org/t/p/original${file_path}`}
 												className="hover:opacity-75 transition ease-in-out rounded"
 												loading="lazy"
 												alt=""
@@ -136,13 +158,26 @@ export default function MoviesId({
 					</Container>
 				</section>
 
-				{isModalOpen && (
-					<Modal open={isModalOpen} onOpen={setIsModalOpen}>
+				{isTrailerModalOpen && (
+					<Modal open={isTrailerModalOpen} onOpen={setIsTrailerModalOpen}>
 						<iframe
 							src={`https://www.youtube.com/embed/${trailerId}`}
 							className="w-full aspect-video"
 							allow="autoplay; encrypted-media"
 						/>
+					</Modal>
+				)}
+
+				{backdropModal.open && (
+					<Modal open={backdropModal.open} onOpen={setBackdropModal}>
+						<picture>
+							<img
+								src={`https://image.tmdb.org/t/p/original${backdropModal.url}`}
+								className="rounded"
+								loading="lazy"
+								alt=""
+							/>
+						</picture>
 					</Modal>
 				)}
 			</main>
@@ -156,7 +191,9 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 	const {
 		data: { cast: allCast },
 	} = await axios.get(`/movie/${query.id}/credits`);
+	const { data: allImages } = await axios.get(`/movie/${query.id}/images`);
 
+	const images = allImages.backdrops.splice(0, 9);
 	const cast = allCast.splice(0, 5);
 
 	const trailerId = videos.results.find(
@@ -169,6 +206,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 				...data,
 				trailerId,
 				cast,
+				images,
 			},
 		},
 	};
