@@ -1,38 +1,38 @@
 import { Container } from '@/components/ui/Container';
 import { axios } from '@/services/axios';
-import { Movie } from '@/shared/interfaces/Movie';
+import { TvShow } from '@/shared/interfaces/TvShow';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { AiFillStar } from 'react-icons/ai';
 
 interface Props {
-	movies: Movie[];
+	tvShows: TvShow[];
 }
 
-export default function Home({ movies }: Props) {
+export default function Tv({ tvShows }: Props) {
 	return (
 		<main>
 			<Head>
-				<title>One Movies</title>
+				<title>TV - One Movies</title>
 			</Head>
 
 			<section>
 				<Container className="pt-8 md:pt-16 pb-16">
 					<h2 className="text-slate-200 uppercase font-bold tracking-wide text-lg">
-						Popular movies
+						Popular shows
 					</h2>
 
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-						{movies.map(({ id, poster_path, title, release_date, vote_average }) => (
+						{tvShows.map(({ id, poster_path, name, first_air_date, vote_average }) => (
 							<div key={id} className="mt-8">
-								<Link href={`/movies/${id}`}>
+								<Link href={`/tv/${id}`}>
 									<picture>
 										<img
 											src={`https://image.tmdb.org/t/p/original${poster_path}`}
 											className="rounded hover:opacity-75 transition ease-in-out duration-150"
 											loading="lazy"
-											alt={title}
+											alt={name}
 										/>
 									</picture>
 								</Link>
@@ -42,13 +42,13 @@ export default function Home({ movies }: Props) {
 										href={`/movies/${id}`}
 										className="text-base xl:text-lg mt-2 hover:text-slate-200"
 									>
-										{title}
+										{name}
 									</Link>
 									<div className="flex items-center text-slate-300 text-sm mt-1">
 										<AiFillStar className="text-yellow-200" />
 										<span className="ml-1">{vote_average}</span>
 										<span className="mx-2">|</span>
-										<span>{release_date}</span>
+										<span>{first_air_date}</span>
 									</div>
 								</div>
 							</div>
@@ -61,11 +61,11 @@ export default function Home({ movies }: Props) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-	const { data } = await axios.get('/movie/popular');
+	const { data } = await axios.get('/tv/popular');
 
 	return {
 		props: {
-			movies: data.results,
+			tvShows: data.results,
 		},
 		revalidate: 10,
 	};

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Container } from '../ui/Container';
-import { HiMenuAlt3 } from 'react-icons/hi';
+import { BiCameraMovie } from 'react-icons/bi';
+import { IoTvOutline } from 'react-icons/io5';
 
 export function MobileNavbar() {
 	return (
@@ -14,10 +15,22 @@ export function MobileNavbar() {
 					</li>
 				</ul>
 
-				<div>
-					<button type="button">
-						<HiMenuAlt3 size={24} />
-					</button>
+				<div className="flex items-center gap-4">
+					<Link
+						href="/"
+						className="text-slate-300 hover:text-white transition-colors ease-in-out"
+						title="Movies"
+					>
+						<BiCameraMovie size={24} />
+					</Link>
+
+					<Link
+						href="/tv"
+						title="TV Shows"
+						className="text-slate-300 hover:text-white transition-colors ease-in-out"
+					>
+						<IoTvOutline size={24} />
+					</Link>
 				</div>
 			</Container>
 		</nav>

@@ -1,7 +1,7 @@
 import { Container } from '@/components/ui/Container';
 import { Modal } from '@/components/ui/Modal';
 import { axios } from '@/services/axios';
-import { Movie } from '@/shared/interfaces/Movie';
+import { TvShow } from '@/shared/interfaces/TvShow';
 import { formatDate } from '@/utils/format';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
@@ -11,15 +11,15 @@ import { AiFillStar } from 'react-icons/ai';
 import { IoPlayCircleOutline } from 'react-icons/io5';
 
 interface Props {
-	movie: Movie;
+	tvShow: TvShow;
 }
 
-export default function MoviesId({
-	movie: {
+export default function TvId({
+	tvShow: {
 		poster_path,
-		title,
+		name,
 		overview,
-		release_date,
+		first_air_date,
 		vote_average,
 		genres,
 		trailerId,
@@ -34,12 +34,12 @@ export default function MoviesId({
 	});
 
 	const voteAverage = (vote_average * 10).toFixed(2);
-	const releaseDate = formatDate(release_date);
+	const firstAirDate = formatDate(first_air_date);
 
 	return (
 		<>
 			<Head>
-				<title>{title} - One Movies</title>
+				<title>{name} - One Movies</title>
 			</Head>
 
 			<main>
@@ -50,18 +50,18 @@ export default function MoviesId({
 								<img
 									src={`https://image.tmdb.org/t/p/original${poster_path}`}
 									className="rounded w-64 lg:w-96"
-									alt={title}
+									alt={name}
 								/>
 							</picture>
 						</div>
 
 						<div>
-							<h2 className="text-4xl mt-4 md:mt-0 mb-2 font-bold">{title}</h2>
+							<h2 className="text-4xl mt-4 md:mt-0 mb-2 font-bold">{name}</h2>
 							<div className="flex flex-wrap items-center text-slate-300 text-sm">
 								<AiFillStar className="text-yellow-200" />
 								<span className="ml-1">{voteAverage}%</span>
 								<span className="mx-2">|</span>
-								<span>{releaseDate}</span>
+								<span>{firstAirDate}</span>
 								<span className="mx-2">|</span>
 								<span>{genres.map(({ name }) => name).join(', ')}</span>
 							</div>
@@ -188,12 +188,12 @@ export default function MoviesId({
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-	const { data } = await axios.get(`/movie/${query.id}`);
-	const { data: videos } = await axios.get(`/movie/${query.id}/videos`);
+	const { data } = await axios.get(`/tv/${query.id}`);
+	const { data: videos } = await axios.get(`/tv/${query.id}/videos`);
 	const {
 		data: { cast: allCast },
-	} = await axios.get(`/movie/${query.id}/credits`);
-	const { data: allImages } = await axios.get(`/movie/${query.id}/images`);
+	} = await axios.get(`/tv/${query.id}/credits`);
+	const { data: allImages } = await axios.get(`/tv/${query.id}/images`);
 
 	const images = allImages.backdrops.splice(0, 9);
 	const cast = allCast.splice(0, 5);
@@ -202,7 +202,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
 	return {
 		props: {
-			movie: {
+			tvShow: {
 				...data,
 				trailerId,
 				cast,
