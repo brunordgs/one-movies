@@ -22,9 +22,10 @@ export default function MoviesId({
 		release_date,
 		vote_average,
 		genres,
-		trailerId,
+		trailer,
 		cast,
 		images,
+		crew,
 	},
 }: Props) {
 	const [isTrailerModalOpen, setIsTrailerModalOpen] = useState(false);
@@ -71,21 +72,15 @@ export default function MoviesId({
 							<div className="mt-12">
 								<h3 className="font-bold">Featured Crew</h3>
 								<div className="flex mt-4 gap-8">
-									<div>
-										<p>Scott Mann</p>
-										<p className="text-sm text-slate-300">Director</p>
-									</div>
-									<div>
-										<p>Scott Mann</p>
-										<p className="text-sm text-slate-300">Director</p>
-									</div>
-									<div>
-										<p>Scott Mann</p>
-										<p className="text-sm text-slate-300">Director</p>
-									</div>
+									{crew.map(({ id, name, job }) => (
+										<div key={id}>
+											<p>{name}</p>
+											<p className="text-sm text-slate-300">{job}</p>
+										</div>
+									))}
 								</div>
 
-								{trailerId && (
+								{trailer.id && (
 									<button
 										type="button"
 										className="inline-flex items-center gap-2 bg-sky-500 rounded font-bold px-5 py-4 transition ease-in-out hover:bg-sky-600 mt-12"
@@ -107,7 +102,7 @@ export default function MoviesId({
 						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
 							{cast.map(({ id, name, character, profile_path }) => (
 								<div key={id} className="mt-8">
-									<Link href={`/actors/${id}`}>
+									<Link href={`/actors/${id}`} passHref>
 										<picture>
 											<img
 												src={`https://image.tmdb.org/t/p/original${profile_path}`}
@@ -163,7 +158,11 @@ export default function MoviesId({
 				{isTrailerModalOpen && (
 					<Modal open={isTrailerModalOpen} onOpen={setIsTrailerModalOpen}>
 						<iframe
-							src={`https://www.youtube.com/embed/${trailerId}`}
+							src={
+								trailer.site === 'YouTube'
+									? `https://www.youtube.com/embed/${trailer.id}`
+									: `https://player.vimeo.com/video/${trailer.id}`
+							}
 							className="w-full aspect-video"
 							allow="autoplay; encrypted-media"
 						/>
@@ -188,25 +187,27 @@ export default function MoviesId({
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-	const { data } = await axios.get(`/movie/${query.id}`);
-	const { data: videos } = await axios.get(`/movie/${query.id}/videos`);
-	const {
-		data: { cast: allCast },
-	} = await axios.get(`/movie/${query.id}/credits`);
-	const { data: allImages } = await axios.get(`/movie/${query.id}/images`);
+	const { data } = await axios.get(`/movie/${query.id}`, {
+		params: {
+			append_to_response: 'credits,videos,images',
+		},
+	});
 
-	const images = allImages.backdrops.splice(0, 9);
-	const cast = allCast.splice(0, 5);
-	const trailerId =
-		videos.results.find(({ type }: { type: string }) => type === 'Trailer')?.key ?? null;
+	const images = data.images.backdrops.splice(0, 9);
+	const cast = data.credits.cast.splice(0, 5);
+	const trailer = data.videos.results.find(({ type }: { type: string }) => type === 'Trailer');
 
 	return {
 		props: {
 			movie: {
 				...data,
-				trailerId,
+				trailer: {
+					id: trailer.key ?? null,
+					site: trailer.site,
+				},
 				cast,
 				images,
+				crew: data.credits.crew.slice(0, 3),
 			},
 		},
 	};

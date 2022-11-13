@@ -1,4 +1,4 @@
-import { Cast } from "./Cast";
+import { Cast } from './Cast';
 
 export interface TvShow {
 	id: number;
@@ -11,9 +11,15 @@ export interface TvShow {
 		id: number;
 		name: string;
 	}[];
-	trailerId: string;
+	trailer: {
+		id: string;
+		site: 'YouTube' | 'Vimeo';
+	};
 	cast: Cast[];
 	images: {
 		file_path: string;
+	}[];
+	created_by: {
+		name: string;
 	}[];
 }

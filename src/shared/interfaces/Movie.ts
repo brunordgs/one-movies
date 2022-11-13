@@ -11,9 +11,17 @@ export interface Movie {
 		id: number;
 		name: string;
 	}[];
-	trailerId: string;
+	trailer: {
+		id: string;
+		site: 'YouTube' | 'Vimeo';
+	};
 	cast: Cast[];
 	images: {
 		file_path: string;
+	}[];
+	crew: {
+		id: number;
+		name: string;
+		job: string;
 	}[];
 }

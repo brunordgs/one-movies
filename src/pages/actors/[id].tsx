@@ -98,7 +98,7 @@ export default function ActorsId({
 										.sort((a, b) => b.popularity - a.popularity)
 										.slice(0, 5)
 										.map(({ id, name, title, poster_path }) => (
-											<Link key={id} href={`/movies/${id}`} className="group">
+											<Link key={id} href={`/movies/${id}`} className="group" passHref>
 												<picture>
 													<img
 														src={`https://image.tmdb.org/t/p/w185/${poster_path}`}

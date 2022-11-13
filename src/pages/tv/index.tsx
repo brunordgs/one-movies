@@ -26,7 +26,7 @@ export default function Tv({ tvShows }: Props) {
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
 						{tvShows.map(({ id, poster_path, name, first_air_date, vote_average }) => (
 							<div key={id} className="mt-8">
-								<Link href={`/tv/${id}`}>
+								<Link href={`/tv/${id}`} passHref>
 									<picture>
 										<img
 											src={`https://image.tmdb.org/t/p/original${poster_path}`}

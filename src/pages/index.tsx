@@ -26,7 +26,7 @@ export default function Home({ movies }: Props) {
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
 						{movies.map(({ id, poster_path, title, release_date, vote_average }) => (
 							<div key={id} className="mt-8">
-								<Link href={`/movies/${id}`}>
+								<Link href={`/movies/${id}`} passHref>
 									<picture>
 										<img
 											src={`https://image.tmdb.org/t/p/original${poster_path}`}
